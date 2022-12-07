@@ -1,10 +1,12 @@
-﻿using System;
+﻿using CommonLayer.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace RepositoryLayer.Interface
 {
-    internal class IUserRL
+    public interface IUserRL
     {
+        public UserRegistrationModel registerUser(UserRegistrationModel userRegistrationModel);
     }
 }
