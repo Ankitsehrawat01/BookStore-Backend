@@ -133,7 +133,7 @@ namespace RepositoryLayer.Service
                                 Rating = rd["Rating"].ToString()   
                             }
                             );
-                    }
+                }
                 return addBook;
             }
             catch (Exception)
@@ -142,6 +142,41 @@ namespace RepositoryLayer.Service
                 throw;
             }
 
+        }
+        public object getBookById(long BookId)
+        {
+            using(con)
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("Sp_GetBookbyId", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BookId", BookId);
+                    con.Open();
+                    BookModel bookModel = new BookModel();
+                    SqlDataReader rd = cmd.ExecuteReader();
+                    if (rd.HasRows)
+                    {
+                        while (rd.Read())
+                        {
+                            bookModel.BookId = Convert.ToInt32(rd["BookId"]);
+                            bookModel.Book_Name = rd["Book_Name"].ToString();
+                            bookModel.Author_Name = rd["Author_Name"].ToString();
+                            bookModel.Price = Convert.ToInt32(rd["Price"]);
+                            bookModel.Description = rd["Description"].ToString();
+                            bookModel.Rating = rd["Author_Name"].ToString();
+                        }
+                        return bookModel;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
         }
     }
 }

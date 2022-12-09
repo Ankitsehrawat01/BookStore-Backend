@@ -62,5 +62,16 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+        public object getBookById(long BookId)
+        {
+            try
+            {
+                return ibookRL.getBookById(BookId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

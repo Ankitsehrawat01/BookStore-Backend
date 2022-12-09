@@ -105,5 +105,27 @@ namespace BookStore.Controllers
                throw;
             }
         }
+        [HttpGet]
+        [Route("GetById")]
+        public IActionResult getBookById(long BookId)
+        {
+            try
+            {
+                var reg = ibookBL.getBookById(BookId);
+                if (reg != null)
+
+                {
+                    return this.Ok(new { Success = true, message = "Book Details", Response = reg });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Unable to get details" });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
