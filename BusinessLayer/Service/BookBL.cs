@@ -27,5 +27,16 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+        public bool deleteBook(long bookId)
+        {
+            try
+            {
+                return ibookRL.deleteBook(bookId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace BookStore.Controllers
             this.ibookBL = ibookBL;
         }
         [HttpPost]
-        [Route("Register")]
+        [Route("Add")]
         public IActionResult addBook(BookModel bookModel)
         {
             try
@@ -36,6 +36,27 @@ namespace BookStore.Controllers
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        [HttpDelete("Delete")]
+        public IActionResult deleteBook(long bookId)
+        {
+            try
+            {
+                var result = ibookBL.deleteBook(bookId);
+                if (result != null)
+
+                {
+                    return this.Ok(new { Success = true, message = "Book Deleted Sucessfull", Response = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Unable to delete" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
     }
