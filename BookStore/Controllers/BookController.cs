@@ -39,7 +39,8 @@ namespace BookStore.Controllers
                 throw ex;
             }
         }
-        [HttpDelete("Delete")]
+        [HttpDelete]
+        [Route("Delete")]
         public IActionResult deleteBook(long BookId)
         {
             try
@@ -55,12 +56,13 @@ namespace BookStore.Controllers
                     return this.BadRequest(new { Success = false, message = "Unable to delete" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw;
             }
         }
-        [HttpPut("Update")]
+        [HttpPut]
+        [Route("Update")]
         public IActionResult UpdateBooks(BookModel bookModel, long BookId)
         {
             try
@@ -76,9 +78,31 @@ namespace BookStore.Controllers
                     return this.BadRequest(new { Success = false, message = "Book details not updated" });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.BadRequest(new { Success = false, message = ex.Message });
+                throw;
+            }
+        }
+        [HttpPost]
+        [Route("Get")]
+        public IActionResult GetAllBooks()
+        {
+            try
+            {
+                var result = ibookBL.GetAllBooks();
+                if (result != null)
+
+                {
+                    return this.Ok(new { Success = true, message = "All Book Details", Response = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Unable to get details" });
+                }
+            }
+            catch (Exception)
+            {
+               throw;
             }
         }
     }
