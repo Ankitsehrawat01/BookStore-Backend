@@ -4,6 +4,7 @@ using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace BusinessLayer.Service
@@ -32,6 +33,17 @@ namespace BusinessLayer.Service
             try
             {
                 return ibookRL.deleteBook(bookId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public BookModel UpdateBook(BookModel bookModel, long BookId)
+        {
+            try
+            {
+                return ibookRL.UpdateBook(bookModel, BookId);
             }
             catch (Exception)
             {

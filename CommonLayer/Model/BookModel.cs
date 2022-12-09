@@ -14,5 +14,7 @@ namespace CommonLayer.Model
         public long Price { get; set; }
         public string Description { get; set; }
         public string Rating { get; set; }
+        //public string BookImage { get; set; }
+        //public string BookQunatity { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -39,11 +40,11 @@ namespace BookStore.Controllers
             }
         }
         [HttpDelete("Delete")]
-        public IActionResult deleteBook(long bookId)
+        public IActionResult deleteBook(long BookId)
         {
             try
             {
-                var result = ibookBL.deleteBook(bookId);
+                var result = ibookBL.deleteBook(BookId);
                 if (result != null)
 
                 {
@@ -52,6 +53,27 @@ namespace BookStore.Controllers
                 else
                 {
                     return this.BadRequest(new { Success = false, message = "Unable to delete" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
+        [HttpPut("Update")]
+        public IActionResult UpdateBooks(BookModel bookModel, long BookId)
+        {
+            try
+            {
+                var result = ibookBL.UpdateBook(bookModel, BookId);
+                if (result != null)
+
+                {
+                    return this.Ok(new { Success = true, message = "Book  Updated Sucessfull", Response = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Book details not updated" });
                 }
             }
             catch (Exception ex)

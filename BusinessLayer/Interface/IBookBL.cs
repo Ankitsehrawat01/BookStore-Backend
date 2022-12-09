@@ -9,5 +9,6 @@ namespace BusinessLayer.Interface
     {
         public BookModel addBook(BookModel bookModel);
         public bool deleteBook(long bookId);
+        public BookModel UpdateBook(BookModel bookModel, long BookId);
     }
 }
