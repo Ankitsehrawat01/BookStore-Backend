@@ -39,6 +39,8 @@ namespace BookStore
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<IBookRL, BookRL>();
             services.AddTransient<IBookBL, BookBL>();
+            services.AddTransient<IAdminRL, AdminRL>();
+            services.AddTransient<IAdminBL, AdminBL>();
 
             //swagger implementation
             services.AddSwaggerGen();
@@ -109,6 +111,10 @@ namespace BookStore
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(x => x  //Cors Implementation
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
 
             app.UseAuthentication();
 

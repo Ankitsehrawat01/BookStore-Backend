@@ -6,10 +6,9 @@ namespace CommonLayer.Model
 {
     public class AdminModel
     {
-        public string AdminName { get; set; }
-        public string AdminEmailID { get; set; }
-        public string AdminPhone { get; set; }
+        public string Admin_Name { get; set; }
+        public string Email_Id { get; set; }
         public string Password { get; set; }
-        public string Address { get; set; }
+        public string Phone_No { get; set; }
     }
 }
