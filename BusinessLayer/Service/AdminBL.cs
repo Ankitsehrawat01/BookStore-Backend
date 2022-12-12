@@ -17,11 +17,11 @@ namespace BusinessLayer.Service
             this.iadminRL = iadminRL;
         }
 
-        public string adminLogin(string email, string password)
+        public string adminLogin(LoginModel loginModel)
         {
             try
             {
-                return iadminRL.adminLogin(email, password);
+                return iadminRL.adminLogin(loginModel);
             }
             catch (Exception)
             {

@@ -23,8 +23,6 @@ namespace RepositoryLayer.Service
         SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStoreDb;Integrated Security=True;");
         public UserRegistrationModel registerUser(UserRegistrationModel userRegistrationModel)
         {
-            // SqlConnection con = new SqlConnection(this.iconfiguration.GetConnectionString("DBConnection"));
-            // SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStoreDb;Integrated Security=True;");
             using (con)
                 try
                 {
@@ -54,69 +52,85 @@ namespace RepositoryLayer.Service
                     throw;
                 }
         }
-        public string userLogin(string email, string password)
+        public string userLogin(LoginModel loginModel)
         {
             using (con)
+            {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("Sp_Login", con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Email_Id", email);
-                    cmd.Parameters.AddWithValue("@Password", password);
+                    SqlCommand command = new SqlCommand("Sp_Login", con);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Email_Id", loginModel.Email_Id);
+                    command.Parameters.AddWithValue("@Password", loginModel.Password);
                     con.Open();
-                    SqlDataReader rd = cmd.ExecuteReader();
-                    if (rd.HasRows)
+                    var result = command.ExecuteScalar();
+                    if (result != null)
                     {
-                        while (rd.Read())
-                        {
-                            email = Convert.ToString(rd["Email_Id"] == DBNull.Value ? default : rd["Email_Id"]);
-                            password = Convert.ToString(rd["Password"] == DBNull.Value ? default : rd["Password"]);
-                        }
-                        var token = this.GenerateJWTToken(email);
+                        string query = "SELECT UserId FROM UserTable WHERE EmaiL_Id = '" + result + "'";
+                        SqlCommand cmd = new SqlCommand(query, con);
+                        var Id = cmd.ExecuteScalar();
+                        var token = GenerateSecurityToken(loginModel.Email_Id, loginModel.UserId);
                         return token;
                     }
-                    return null;
+                    else
+                    {
+                        return null;
+                    }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
-                    throw;
+                    throw new Exception(e.Message);
                 }
+                finally
+                {
+                    con.Close();
+                }
+            }
         }
-        public string GenerateJWTToken(string email)
+
+        public string GenerateSecurityToken(string email, long userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(iconfiguration["Jwt:key"]);
+            var key = Encoding.ASCII.GetBytes(this.iconfiguration[("JWT:Key")]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("Email_Id", email) }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Role, "User"),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("UserId", userId.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
             return tokenHandler.WriteToken(token);
+
         }
 
-        public string ForgetPassword(string Emailid)
+        public string ForgetPassword(string Email_Id)
         {
             using (con)
                 try
                 {
                     SqlCommand cmd = new SqlCommand("Sp_ForgetPassword", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Email_Id", Emailid);
+                    cmd.Parameters.AddWithValue("@Email_Id", Email_Id);
                     con.Open();
                     SqlDataReader rd = cmd.ExecuteReader();
                     if (rd.HasRows)
                     {
                         while (rd.Read())
                         {
-                            Emailid = Convert.ToString(rd["Email_Id"] == DBNull.Value ? default : rd["Email_Id"]);
+                            var userId = Convert.ToInt32(rd["UserId"] == DBNull.Value ? default : rd["UserId"]);
+                            var token = this.GenerateSecurityToken(Email_Id, userId);
+                            MSMQ msmq = new MSMQ();
+                            msmq.sendData2Queue(token);
+                            return token;
                         }
-                        var token = this.GenerateJWTToken(Emailid);
-                        MSMQ msmq = new MSMQ();
-                        msmq.sendData2Queue(token);
-                        return token;
+                        
                     }
                     con.Close();
                     return null;

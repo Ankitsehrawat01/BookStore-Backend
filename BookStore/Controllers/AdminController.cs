@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using BusinessLayer.Service;
+using CommonLayer.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,11 +19,11 @@ namespace BookStore.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult adminLogin(string email, string password)
+        public IActionResult adminLogin(LoginModel loginModel)
         {
             try
             {
-                string tokenString = iadminBL.adminLogin(email, password);
+                string tokenString = iadminBL.adminLogin(loginModel);
                 if (tokenString != null)
                 {
                     return Ok(new { Success = true, message = "login Sucessfull", Data = tokenString });

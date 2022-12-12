@@ -43,11 +43,11 @@ namespace BookStore.Controllers
         }
         [HttpPost]
         [Route("Login")]
-        public IActionResult userLogin(string email, string password)
+        public IActionResult userLogin(LoginModel loginModel)
         {
             try
             {
-                string tokenString = iuserBL.userLogin(email, password);
+                string tokenString = iuserBL.userLogin(loginModel);
                 if (tokenString != null)
                 {
                     return Ok(new { Success = true, message = "login Sucessfull", Data = tokenString });

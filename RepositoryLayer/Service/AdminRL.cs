@@ -8,6 +8,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CommonLayer.Model;
 
 namespace RepositoryLayer.Service
 {
@@ -21,25 +22,23 @@ namespace RepositoryLayer.Service
 
         SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStoreDb;Integrated Security=True;");
         
-        public string adminLogin(string email, string password)
+        public string adminLogin(LoginModel loginModel)
         {
             using (con)
                 try
                 {
                     SqlCommand cmd = new SqlCommand("Sp_AdminLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Email_Id", email);
-                    cmd.Parameters.AddWithValue("@Password", password);
+                    cmd.Parameters.AddWithValue("@Email_Id", loginModel.Email_Id);
+                    cmd.Parameters.AddWithValue("@Password", loginModel.Password);
                     con.Open();
-                    SqlDataReader rd = cmd.ExecuteReader();
-                    if (rd.HasRows)
+                    var rd = cmd.ExecuteScalar();
+                    if(rd!=null) 
                     {
-                        while (rd.Read())
-                        {
-                            email = Convert.ToString(rd["Email_Id"] == DBNull.Value ? default : rd["Email_Id"]);
-                            password = Convert.ToString(rd["Password"] == DBNull.Value ? default : rd["Password"]);
-                        }
-                        var token = this.GenerateJWTToken(email);
+                        string query = "SELECT AdminId FROM AdminTable WHERE Email_Id = '" + rd + "'";
+                        SqlCommand cmd1 = new SqlCommand(query, con);
+                        var Id = cmd1.ExecuteScalar();
+                        var token = GenerateJWTToken(loginModel.Email_Id, loginModel.UserId);
                         return token;
                     }
                     return null;
@@ -49,8 +48,12 @@ namespace RepositoryLayer.Service
 
                     throw;
                 }
+                finally
+                {
+                    con.Close();
+                }
         }
-        public string GenerateJWTToken(string email)
+        public string GenerateJWTToken(string email, long userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(iconfiguration["Jwt:key"]);
@@ -58,7 +61,9 @@ namespace RepositoryLayer.Service
             {
                 Subject = new ClaimsIdentity(new[] 
                 {
-                    new Claim("Email_Id", email)
+                    new Claim(ClaimTypes.Role, "Admin"),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("UserId", userId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

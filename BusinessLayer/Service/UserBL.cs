@@ -27,11 +27,11 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public string userLogin(string email, string password)
+        public string userLogin(LoginModel loginModel)
         {
             try
             {
-                return iuserRL.userLogin(email, password);
+                return iuserRL.userLogin(loginModel);
             }
             catch (Exception)
             {
