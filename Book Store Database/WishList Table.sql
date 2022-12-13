@@ -4,3 +4,5 @@ Create table WishListTable
 	UserId bigint foreign key references UserTable(UserId),
 	BookId bigint foreign key references BookTable(BookId)
 );
+
+select * from UserTable

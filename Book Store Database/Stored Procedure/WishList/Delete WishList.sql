@@ -6,3 +6,4 @@ as
 --SQL Statement
 delete from WishListTable where WishListId = @WishListId and UserId=@UserId;
 go
+

@@ -37,12 +37,19 @@ namespace BookStore
 
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
+
             services.AddTransient<IBookRL, BookRL>();
             services.AddTransient<IBookBL, BookBL>();
-            services.AddTransient<IAdminRL, AdminRL>();
+
             services.AddTransient<IAdminBL, AdminBL>();
+            services.AddTransient<IAdminRL, AdminRL>();
+            
+
             services.AddTransient<IWishListRL, WishListRL>();
             services.AddTransient<IWishListBL, WishListBL>();
+
+            services.AddTransient<ICartRL, CartRL>();
+            services.AddTransient<ICartBL, CartBL>();
 
             //swagger implementation
             services.AddSwaggerGen();

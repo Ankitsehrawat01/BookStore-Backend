@@ -20,14 +20,14 @@ namespace BookStore.Controllers
         }
         [HttpPost]
         [Route("Add")]
-        public IActionResult AddWishList(WishListModel wishlistmodel)
+        public IActionResult AddWishList(long BookId)
         {
             try
             {
                 //var currentUser = HttpContext.User;
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
 
-                var result = iwishListBL.AddWishList(wishlistmodel, userId);
+                var result = iwishListBL.AddWishList(BookId, userId);
                 if (result != null)
                 {
                     return Ok(new { success = true, message = "Add Book successful", data = result });

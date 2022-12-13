@@ -15,11 +15,11 @@ namespace BusinessLayer.Service
         {
             this.iwishListRL = iwishListRL;
         }
-        public WishListModel AddWishList(WishListModel wishlistmodel, long UserId)
+        public bool AddWishList(long BookId, long UserId)
         {
             try
             {
-                return iwishListRL.AddWishList(wishlistmodel, UserId);
+                return iwishListRL.AddWishList(BookId, UserId);
             }
             catch (Exception)
             {

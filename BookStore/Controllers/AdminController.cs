@@ -11,8 +11,8 @@ namespace BookStore.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly AdminBL iadminBL;
-        public AdminController(AdminBL iadminBL)
+        private readonly IAdminBL iadminBL;
+        public AdminController(IAdminBL iadminBL)
         {
             this.iadminBL = iadminBL;
         }

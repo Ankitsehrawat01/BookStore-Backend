@@ -1,6 +1,6 @@
-CREATE or ALTER PROCEDURE Sp_AddWishList
+CREATE or ALTER PROCEDURE AddWishList
 (@UserId bigint,@BookId bigint)
-as
---SQL Statement
- INSERT into WishListTable values (@UserId,@BookId);
-go
+As
+BEGIN
+ INSERT INTO WishListTable (UserId, BookId)VALUES (@UserId,@BookId);
+END;

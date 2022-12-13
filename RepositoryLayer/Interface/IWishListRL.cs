@@ -7,7 +7,7 @@ namespace RepositoryLayer.Interface
 {
     public interface IWishListRL
     {
-        public WishListModel AddWishList(WishListModel wishlistmodel, long UserId);
+        public bool AddWishList(long BookId, long UserId);
         public bool deleteWishList(long WishListId, long UserId);
         public object getWishList(long UserId);
     }

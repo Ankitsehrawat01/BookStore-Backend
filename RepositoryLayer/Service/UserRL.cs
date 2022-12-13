@@ -66,10 +66,10 @@ namespace RepositoryLayer.Service
                     var result = command.ExecuteScalar();
                     if (result != null)
                     {
-                        string query = "SELECT UserId FROM UserTable WHERE EmaiL_Id = '" + result + "'";
+                        string query = "SELECT UserId FROM UserTable WHERE EmaiL_Id = '" + loginModel.Email_Id + "'";
                         SqlCommand cmd = new SqlCommand(query, con);
                         var Id = cmd.ExecuteScalar();
-                        var token = GenerateSecurityToken(loginModel.Email_Id, loginModel.UserId);
+                        var token = GenerateSecurityToken(loginModel.Email_Id, Id.ToString());
                         return token;
                     }
                     else
@@ -88,7 +88,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public string GenerateSecurityToken(string email, long userId)
+        public string GenerateSecurityToken(string email, string UserId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(this.iconfiguration[("JWT:Key")]);
@@ -98,7 +98,7 @@ namespace RepositoryLayer.Service
                 {
                     new Claim(ClaimTypes.Role, "User"),
                     new Claim(ClaimTypes.Email, email),
-                    new Claim("UserId", userId.ToString())
+                    new Claim("UserId", UserId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -125,7 +125,7 @@ namespace RepositoryLayer.Service
                         while (rd.Read())
                         {
                             var userId = Convert.ToInt32(rd["UserId"] == DBNull.Value ? default : rd["UserId"]);
-                            var token = this.GenerateSecurityToken(Email_Id, userId);
+                            var token = this.GenerateSecurityToken(Email_Id, userId.ToString());
                             MSMQ msmq = new MSMQ();
                             msmq.sendData2Queue(token);
                             return token;

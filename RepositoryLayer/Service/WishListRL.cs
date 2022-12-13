@@ -20,16 +20,16 @@ namespace RepositoryLayer.Service
 
         SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStoreDb;Integrated Security=True;");
 
-        public WishListModel AddWishList(WishListModel wishlistmodel, long UserId)
+        public bool AddWishList(long BookId, long UserId)
         {
             try
             {
                 using (con)
                 {
-                    SqlCommand cmd = new SqlCommand("Sp_AddWishList", con);
+                    SqlCommand cmd = new SqlCommand("AddWishList", con);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@BookId ", wishlistmodel.BookId);
+                    cmd.Parameters.AddWithValue("@BookId ", BookId);
                     cmd.Parameters.AddWithValue("@UserId ", UserId);
 
                     con.Open();
@@ -38,11 +38,11 @@ namespace RepositoryLayer.Service
 
                     if (result != 0)
                     {
-                        return wishlistmodel;
+                        return true;
                     }
                     else
                     {
-                        return null;
+                        return false;
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace RepositoryLayer.Service
         {
             using (con)
                 try
-                { 
+                {
                     SqlCommand cmd = new SqlCommand("Sp_GetWishList", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", UserId);
