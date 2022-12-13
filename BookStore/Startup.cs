@@ -53,6 +53,9 @@ namespace BookStore
             services.AddTransient<IFeedbackBL, FeedbackBL>();
             services.AddTransient<IFeedbackRL, FeedbackRL>();
 
+            services.AddTransient<IAddressBL, AddressBL>();
+            services.AddTransient<IAddressRL, AddressRL>();
+
 
             //swagger implementation
             services.AddSwaggerGen();

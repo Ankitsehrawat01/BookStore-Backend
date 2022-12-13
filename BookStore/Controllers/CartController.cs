@@ -34,11 +34,11 @@ namespace BookStore.Controllers
 
                 if (response != null)
                 {
-                    return this.Ok(new { success = true, message = "Book added successfully", data = response });
+                    return Ok(new { success = true, message = "Book added successfully", data = response });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, message = "Book Not Added", data = response });
+                    return BadRequest(new { success = false, message = "Book Not Added", data = response });
                 }
             }
             catch (Exception ex)
