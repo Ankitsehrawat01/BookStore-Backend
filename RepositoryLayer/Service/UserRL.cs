@@ -15,6 +15,7 @@ namespace RepositoryLayer.Service
     public class UserRL : IUserRL
     {
         private readonly IConfiguration iconfiguration;
+        public string Key = "ankit@@sehrawat@@";
         public UserRL(IConfiguration iconfiguration)
         {
             this.iconfiguration = iconfiguration;
@@ -30,7 +31,7 @@ namespace RepositoryLayer.Service
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@FullName", userRegistrationModel.FullName);
                     cmd.Parameters.AddWithValue("@Email_Id", userRegistrationModel.Email_Id);
-                    cmd.Parameters.AddWithValue("@Password", userRegistrationModel.Password);
+                    cmd.Parameters.AddWithValue("@Password", EncryptPassword(userRegistrationModel.Password));
                     cmd.Parameters.AddWithValue("@Mobile_Number", userRegistrationModel.Mobile_Number);
 
                     con.Open();
@@ -61,12 +62,13 @@ namespace RepositoryLayer.Service
                     SqlCommand command = new SqlCommand("Sp_Login", con);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Email_Id", loginModel.Email_Id);
-                    command.Parameters.AddWithValue("@Password", loginModel.Password);
+                    command.Parameters.AddWithValue("@Password", EncryptPassword(loginModel.Password));
                     con.Open();
                     var result = command.ExecuteScalar();
                     if (result != null)
                     {
                         string query = "SELECT UserId FROM UserTable WHERE EmaiL_Id = '" + loginModel.Email_Id + "'";
+                        string query2 = "SELECT UserId FROM UserTable WHERE Password = '" + DecryptPassword(loginModel.Password) + "'";
                         SqlCommand cmd = new SqlCommand(query, con);
                         var Id = cmd.ExecuteScalar();
                         var token = GenerateSecurityToken(loginModel.Email_Id, Id.ToString());
@@ -149,7 +151,7 @@ namespace RepositoryLayer.Service
                     SqlCommand cmd = new SqlCommand("Sp_ResetPassword", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Email_Id", email);
-                    cmd.Parameters.AddWithValue("@Password", newpassword);
+                    cmd.Parameters.AddWithValue("@Password", EncryptPassword(newpassword));
                     con.Open();
                     SqlDataReader rd = cmd.ExecuteReader();
                     if (rd.HasRows)
@@ -165,6 +167,49 @@ namespace RepositoryLayer.Service
                 }
 
                 return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public string EncryptPassword(string password)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    return "";
+                }
+                else
+                {
+                    password += Key;
+                    var passwordBytes = Encoding.UTF8.GetBytes(password);
+                    return Convert.ToBase64String(passwordBytes);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public string DecryptPassword(string base64EncodeData)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(base64EncodeData))
+                {
+                    return "";
+                }
+                else
+                {
+                    var base64EncodeBytes = Convert.FromBase64String(base64EncodeData);
+                    var result = Encoding.UTF8.GetString(base64EncodeBytes);
+                    result = result.Substring(0, result.Length - Key.Length);
+                    return result;
+                }
             }
             catch (Exception)
             {
