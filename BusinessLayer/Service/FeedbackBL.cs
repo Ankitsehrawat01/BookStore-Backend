@@ -26,11 +26,23 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public IEnumerable<FeedbackModel> getFeedback(long UserId)
+        public IEnumerable<FeedbackModel> getFeedback( long BookId)
         {
             try
             {
-                return iFeedbackRL.getFeedback(UserId);
+                return iFeedbackRL.getFeedback(BookId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public object getFeedbackbyId(long FeedbackId, long UserId)
+        {
+            try
+            {
+                return iFeedbackRL.getFeedbackbyId(FeedbackId, UserId);
             }
             catch (Exception)
             {

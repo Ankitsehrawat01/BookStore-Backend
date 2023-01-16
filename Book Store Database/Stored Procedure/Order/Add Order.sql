@@ -1,34 +1,36 @@
-GO
-CREATE OR ALTER PROCEDURE Sp_AddOrder
-		@CartId bigint,
-		@AddressId bigint,
-		@OrderDate Varchar(100),
-		@UserId bigint
+Create or ALTER PROCEDURE Sp_AddOrder
+	@UserId bigint,
+	@AddressId bigint,
+	@BookId bigint ,
+	@BookQuantity bigint
 AS
-	BEGIN try
-		
-		DECLARE @Order_Quantity bigint = (SELECT Book_Quantity FROM CartTable WHERE  CartId = @CartId)
-		Declare @Quantity bigint = (SELECT Book_Quantity FROM BookTable bt Inner Join CartTable ct ON bt.BookId = ct.BookId WHERE ct.CartId = @CartId)
-		DECLARE @BookId bigint = (SELECT bt.BookId FROM BookTable bt Inner Join CartTable ct ON bt.BookId = ct.BookId WHERE ct.CartId = @CartId)
-		DECLARE @TotalPrice bigint = (SELECT Price FROM BookTable WHERE BookId = @BookId)
-		IF (@Order_Quantity <= @Quantity)
-		BEGIN
-			INSERT INTO OrderTable
-			(
-				Order_Quantity, OrderDate, TotalPrice, BookId, UserId, AddressId, CartId)
-			VALUES
-			(
-				@Order_Quantity, @OrderDate, @TotalPrice * @Order_Quantity, @BookId, @UserId, @AddressId, @CartId
-			)
-	BEGIN
-		UPDATE CartTable
-		SET Book_Quantity = Book_Quantity - @Order_Quantity
-		WHERE BookId = @BookId
-	END
-	BEGIN
-		DELETE FROM CartTable WHERE BookId = @BookId
-	END
-	END
-	END try
-	BEGIN catch
-	END catch
+	Declare @TotPrice int
+BEGIN
+Select @TotPrice=Discount_Price from BookTable where BookId = @BookId;
+	IF (EXISTS(SELECT * FROM BookTable WHERE bookId = @BookId))
+	begin
+		IF (EXISTS(SELECT * FROM UserTable WHERE UserId = @UserId))
+		Begin
+		Begin try
+			Begin transaction			
+				INSERT INTO OrderTable(UserId,AddressId,BookId,Totalprice,BookQuantity,OrderDate)
+				VALUES ( @UserId,@AddressId,@BookId,@BookQuantity*@TotPrice,@BookQuantity,GETDATE())
+				Update BookTable set Book_Quantity=Book_Quantity-@BookQuantity
+				Delete from CartTable where BookId = @BookId and UserId = @UserId
+				select * from OrderTable
+			commit Transaction
+		End try
+		Begin catch
+			Rollback transaction
+		End catch
+		end
+		Else
+		begin
+			Select 1
+		end
+	end 
+	Else
+	begin
+			Select 2
+	end	
+END

@@ -5,3 +5,5 @@ Book_Quantity bigint default 1,
 UserId bigint foreign key (UserId) references UserTable(UserId),
 BookId bigint Foreign key (BookId) references BookTable(BookId)
 );
+
+select*from CartTable

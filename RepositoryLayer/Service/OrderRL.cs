@@ -17,7 +17,7 @@ namespace RepositoryLayer.Service
             this.iconfiguration = iconfiguration;
         }
         SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStoreDb;Integrated Security=True;");
-        public bool addOrder(OrderModel orderModel, long UserId)
+        public OrderModel addOrder(OrderModel orderModel, long UserId)
         {
             using (con)
                 try
@@ -26,20 +26,22 @@ namespace RepositoryLayer.Service
                     SqlCommand cmd = new SqlCommand("Sp_AddOrder", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     con.Open();
-                    cmd.Parameters.AddWithValue("@CartId", orderModel.CartId);
+                    //cmd.Parameters.AddWithValue("@CartId", orderModel.CartId);
                     cmd.Parameters.AddWithValue("@AddressId", orderModel.AddressId);
-                    cmd.Parameters.AddWithValue("@OrderDate", DateTime.Now.ToString());
+                    //cmd.Parameters.AddWithValue("@OrderDate", DateTime.Now.ToString());
                     cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@BookId", orderModel.BookId);
+                    cmd.Parameters.AddWithValue("@BookQuantity", orderModel.BookQuantity);
 
                     var result = cmd.ExecuteNonQuery();
 
                     if (result != 0)
                     {
-                        return true;
+                        return orderModel;
                     }
                     else
                     {
-                        return false;
+                        return null;
                     }
                 }
                 catch (Exception)

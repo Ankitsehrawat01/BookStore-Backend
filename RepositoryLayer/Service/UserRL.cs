@@ -68,7 +68,7 @@ namespace RepositoryLayer.Service
                     if (result != null)
                     {
                         string query = "SELECT UserId FROM UserTable WHERE EmaiL_Id = '" + loginModel.Email_Id + "'";
-                        string query2 = "SELECT UserId FROM UserTable WHERE Password = '" + DecryptPassword(loginModel.Password) + "'";
+                        //string query2 = "SELECT UserId FROM UserTable WHERE Password = '" + DecryptPassword(loginModel.Password) + "'";
                         SqlCommand cmd = new SqlCommand(query, con);
                         var Id = cmd.ExecuteScalar();
                         var token = GenerateSecurityToken(loginModel.Email_Id, Id.ToString());

@@ -39,7 +39,7 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public IEnumerable<CartModel> getCart(long UserId)
+        public IEnumerable<CartModel1> getCart(long UserId)
         {
             try
             {
@@ -56,6 +56,18 @@ namespace BusinessLayer.Service
             try
             {
                 return icartRL.updateCart(CartId, cartModel, UserId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public object getCartById(long CartId)
+        {
+            try
+            {
+                return icartRL.getCartById(CartId);
             }
             catch (Exception)
             {

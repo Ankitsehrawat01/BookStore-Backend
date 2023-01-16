@@ -16,7 +16,7 @@ namespace BusinessLayer.Service
             this.iOrderRL = iOrderRL;
         }
 
-        public bool addOrder(OrderModel orderModel, long UserId)
+        public OrderModel addOrder(OrderModel orderModel, long UserId)
         {
             try
             {

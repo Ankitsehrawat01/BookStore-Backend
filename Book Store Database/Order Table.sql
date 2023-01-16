@@ -1,9 +1,11 @@
-CREATE TABLE OrderTable
-(OrderId bigint primary key identity(1,1),
-Order_Quantity bigint, 
-OrderDate Varchar(100), TotalPrice bigint,
-BookId bigint foreign key (BookId ) references BookTable(BookId),
-UserId bigint foreign key (UserId) references UserTable(UserId),
-AddressId bigint foreign key references AddressTable(AddressId),
-CartId bigint foreign key references CartTable(CartId) )
+create table OrderTable(
+OrderId bigint identity(1,1) not null primary key,
+UserId bigint FOREIGN KEY (UserId) REFERENCES UserTable(UserId),
+BookId bigint FOREIGN KEY (BookId) REFERENCES BookTable(bookId),
+AddressId bigint FOREIGN KEY (AddressId) REFERENCES AddressTable(AddressId),
+TotalPrice bigint,
+BookQuantity bigint,
+OrderDate Date);
+
+
 

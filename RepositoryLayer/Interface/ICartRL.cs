@@ -9,7 +9,8 @@ namespace RepositoryLayer.Interface
     {
         public CartModel addCart(CartModel cartModel, long UserId);
         public bool removeCart(int CartId);
-        public IEnumerable<CartModel> getCart(long UserId);
+        public IEnumerable<CartModel1> getCart(long UserId);
         public CartModel updateCart(long CartId, CartModel cartModel, long UserId);
+        public object getCartById(long CartId);
     }
 }

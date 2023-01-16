@@ -18,6 +18,8 @@ namespace BookStore.Controllers
         {
             this.iwishListBL = iwishListBL;
         }
+
+        [Authorize]
         [HttpPost]
         [Route("Add")]
         public IActionResult AddWishList(long BookId)
@@ -25,9 +27,9 @@ namespace BookStore.Controllers
             try
             {
                 //var currentUser = HttpContext.User;
-                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
 
-                var result = iwishListBL.AddWishList(BookId, userId);
+                var result = iwishListBL.AddWishList( BookId, UserId);
                 if (result != null)
                 {
                     return Ok(new { success = true, message = "Add Book successful", data = result });
@@ -43,6 +45,7 @@ namespace BookStore.Controllers
                 throw ex;
             }
         }
+        [Authorize]
         [HttpDelete]
         [Route("Delete")]
         public IActionResult deleteWishList(long WishListId)
@@ -68,12 +71,13 @@ namespace BookStore.Controllers
                 throw ex;
             }
         }
+        [Authorize]
         [HttpGet("GetWishList")]
-        public IActionResult GetWishList(long UserId)
+        public IActionResult GetWishList()
         {
             try
             {
-                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
+                long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
                 var result = iwishListBL.getWishList(UserId);
                 if (result != null)
                 {

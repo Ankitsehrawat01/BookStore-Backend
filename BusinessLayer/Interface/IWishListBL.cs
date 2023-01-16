@@ -9,6 +9,6 @@ namespace BusinessLayer.Interface
     {
         public bool AddWishList(long BookId, long UserId);
         public bool deleteWishList(long WishListId, long UserId);
-        public object getWishList(long UserId);
+        public IEnumerable<WishListModel> getWishList(long UserId);
     }
 }

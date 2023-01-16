@@ -16,6 +16,10 @@ namespace RepositoryLayer.Service
         {
             this.icofiguration = icofiguration;
         }
+
+        SqlDataReader rd;
+        List<CartModel1> cartModel1 = new List<CartModel1>();
+
         SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookStoreDb;Integrated Security=True;");
 
         public CartModel addCart(CartModel cartModel, long UserId)
@@ -83,29 +87,36 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
-        public IEnumerable<CartModel> getCart(long UserId)
+        public IEnumerable<CartModel1> getCart(long UserId)
         {
-            List<CartModel> cartModel = new List<CartModel>();
             try
             {
                 using (con)
                 {
                     con.Open();
 
-                    String query = "SELECT CartId, Book_Quantity, BookId FROM CartTable WHERE UserId = '" + UserId + "'";
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    SqlDataReader rd = cmd.ExecuteReader();
+                    SqlCommand cmd = new SqlCommand("Sp_GetCart", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId ", UserId);
+                    rd = cmd.ExecuteReader();
                     while (rd.Read())
                     {
-                        cartModel.Add(new CartModel()
+                        cartModel1.Add(new CartModel1()
                         {
-                            BookId = (long)rd["BookId"],
-                            Book_Quantity = (long)rd["Book_Quantity"]
+                            CartId = Convert.ToInt32(rd["CartId"]),
+                            Book_Quantity = (long)rd["Book_Quantity"],
+                            BookId = Convert.ToInt32(rd["BookId"]),
+                            UserId = Convert.ToInt32(rd["UserId"]),
+                            Book_Image = rd["Book_Image"].ToString(),
+                            Author_Name = rd["Author_Name"].ToString(),
+                            Price = Convert.ToInt32(rd["Price"]),
+                            Discount_Price = Convert.ToInt32(rd["Discount_Price"]),
+                            Book_Name = rd["Book_Name"].ToString(),
 
 
                         });
                     }
-                    return cartModel;
+                    return cartModel1;
                 }
             }
             catch (Exception)
@@ -149,6 +160,41 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public object getCartById(long CartId)
+        {
+            using (con)
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("Sp_GetCartbyId", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CartId", CartId);
+                    con.Open();
+                    CartModel1 cartModel1 = new CartModel1();
+                    SqlDataReader rd = cmd.ExecuteReader();
+                    if (rd.HasRows)
+                    {
+                        while (rd.Read())
+                        {
+                            cartModel1.CartId = Convert.ToInt32(rd["CartId"]);
+                            cartModel1.Book_Name = rd["Book_Name"].ToString();
+                            cartModel1.Author_Name = rd["Author_Name"].ToString();
+                            cartModel1.Price = Convert.ToInt32(rd["Price"]);
+                            cartModel1.Discount_Price = Convert.ToInt32(rd["Discount_Price"]);
+                            cartModel1.Book_Quantity = Convert.ToInt32(rd["Book_Quantity"]);
+                            cartModel1.Book_Image = rd["Book_Image"].ToString();
+                        }
+                        return cartModel1;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception)
+                {
 
+                    throw;
+                }
+        }
     }
 }

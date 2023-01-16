@@ -40,7 +40,7 @@ namespace CommonLayer.Model
                     EnableSsl = true
 
                 };
-                SMTP.Send("hemsdemo10@gmail.com", "ankitfundooapp@gmail.com", subject, body);
+                SMTP.Send("sehrawata328@gmail.com", "ankitfundooapp@gmail.com", subject, body);
                 // Process the logic be sending the message
                 //Restart the asynchronous receive operation.
                 MessageQ.BeginReceive();

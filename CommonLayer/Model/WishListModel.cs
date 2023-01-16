@@ -6,7 +6,18 @@ namespace CommonLayer.Model
 {
     public class WishListModel
     {
-        public long WishlistId { get; set; }
+        public long WishListId { get; set; }
+        public long BookId { get; set; }
+        public long UserId { get; set; }
+
+        public string Book_Name { get; set; }
+        public string Author_Name { get; set; }
+        public long Price { get; set; }
+        public long Discount_Price { get; set; }
+        public string Book_Image { get; set; }
+    }
+    public class WishListModel1
+    {
         public long BookId { get; set; }
         public long UserId { get; set; }
     }

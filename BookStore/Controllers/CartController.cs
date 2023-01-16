@@ -74,11 +74,11 @@ namespace BookStore.Controllers
         [Authorize]
         [HttpGet]
         [Route ("GetCart")]
-        public IActionResult getCart(int UserId)
+        public IActionResult getCart()
         {
             try
             {
-                int UserID = Convert.ToInt32(User.Claims.FirstOrDefault(g => g.Type == "UserId").Value);
+                int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(g => g.Type == "UserId").Value);
                 var result = icartBL.getCart(UserId);
 
                 if (result != null)
@@ -118,6 +118,29 @@ namespace BookStore.Controllers
             {
 
                 throw e;
+            }
+        }
+        [Authorize]
+        [HttpGet]
+        [Route("GetById")]
+        public IActionResult getCartById(long CartId)
+        {
+            try
+            {
+                var reg = icartBL.getCartById(CartId);
+                if (reg != null)
+
+                {
+                    return this.Ok(new { Success = true, message = "Book Details", Response = reg });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Unable to get details" });
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

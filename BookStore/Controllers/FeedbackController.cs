@@ -18,6 +18,7 @@ namespace BookStore.Controllers
         {
             this.iFeedbackBL = iFeedbackBL;
         }
+        [Authorize]
         [HttpPost]
         [Route("Add")]
         public IActionResult addFeedback(FeedbackModel feedbackModel)
@@ -37,12 +38,12 @@ namespace BookStore.Controllers
         [Authorize]
         [HttpGet]
         [Route("Get")]
-        public IActionResult getFeedback(long UserId)
+        public IActionResult getFeedback(long BookId)
         {
             try
             {
-                int UserID = Convert.ToInt32(User.Claims.FirstOrDefault(g => g.Type == "UserId").Value);
-                var result = iFeedbackBL.getFeedback(UserId);
+                int UserId = Convert.ToInt32(User.Claims.FirstOrDefault(g => g.Type == "UserId").Value);
+                var result = iFeedbackBL.getFeedback(BookId);
 
                 if (result != null)
                 {
@@ -56,6 +57,23 @@ namespace BookStore.Controllers
             catch (System.Exception)
             {
                 throw;
+            }
+        }
+        [Authorize]
+        [HttpGet]
+        [Route("GetbyId")]
+        public IActionResult getFeedbackbyId(long FeedbackId)
+        {
+            long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+            var result = iFeedbackBL.getFeedbackbyId(FeedbackId, UserId);
+            
+            if (result != null) 
+            {
+                return Ok(new { Success = true, Message = "Get Feedback by Id successful", Data = result });
+            }
+            else
+            {
+                return BadRequest(new { Success = false, Message = "Get Feedback by Id successful", });
             }
         }
     }

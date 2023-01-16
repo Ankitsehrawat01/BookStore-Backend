@@ -38,7 +38,7 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public object getWishList(long UserId)
+        public IEnumerable<WishListModel> getWishList(long UserId)
         {
             try
             {

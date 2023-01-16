@@ -7,7 +7,7 @@ namespace RepositoryLayer.Interface
 {
     public interface IOrderRL
     {
-        public bool addOrder(OrderModel orderModel, long UserId);
+        public OrderModel addOrder(OrderModel orderModel, long UserId);
         public bool CancelOrder(long OrderId);
         public IEnumerable<GetOrderModel> GetAllOrders();
     }

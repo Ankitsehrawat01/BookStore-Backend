@@ -30,6 +30,11 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@Price", bookModel.Price);
                     cmd.Parameters.AddWithValue("@Description", bookModel.Description);
                     cmd.Parameters.AddWithValue("@Rating", bookModel.Rating);
+                    cmd.Parameters.AddWithValue("@Rating_Count", bookModel.Rating_Count);
+                    cmd.Parameters.AddWithValue("@Discount_Price", bookModel.Discount_Price);
+                    cmd.Parameters.AddWithValue("@Book_Quantity", bookModel.Book_Quantity);
+                    cmd.Parameters.AddWithValue("@Book_Image", bookModel.Book_Image);
+
 
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
@@ -90,6 +95,10 @@ namespace RepositoryLayer.Service
                     cmd.Parameters.AddWithValue("@Price", bookModel.Price);
                     cmd.Parameters.AddWithValue("@Description", bookModel.Description);
                     cmd.Parameters.AddWithValue("@Rating", bookModel.Rating);
+                    cmd.Parameters.AddWithValue("@Rating_Count", bookModel.Rating_Count);
+                    cmd.Parameters.AddWithValue("@Discount_Price", bookModel.Discount_Price);
+                    cmd.Parameters.AddWithValue("@Book_Quantity", bookModel.Book_Quantity);
+                    cmd.Parameters.AddWithValue("@Book_Image", bookModel.Book_Image);
 
                     con.Open();
                     int result = cmd.ExecuteNonQuery();
@@ -130,7 +139,11 @@ namespace RepositoryLayer.Service
                                 Author_Name = rd["Author_Name"].ToString(),
                                 Price = Convert.ToInt32(rd["Price"]),
                                 Description = rd["Description"].ToString(),
-                                Rating = rd["Rating"].ToString()   
+                                Rating = rd["Rating"].ToString(),
+                                Rating_Count = Convert.ToInt32(rd["Rating_Count"]),
+                                Discount_Price = Convert.ToInt32(rd["Discount_Price"]),
+                                Book_Quantity = Convert.ToInt32(rd["Book_Quantity"]),
+                                Book_Image = rd["Book_Image"].ToString()
                             }
                             );
                 }
@@ -163,7 +176,11 @@ namespace RepositoryLayer.Service
                             bookModel.Author_Name = rd["Author_Name"].ToString();
                             bookModel.Price = Convert.ToInt32(rd["Price"]);
                             bookModel.Description = rd["Description"].ToString();
-                            bookModel.Rating = rd["Author_Name"].ToString();
+                            bookModel.Rating = rd["Rating"].ToString();
+                            bookModel.Rating_Count = Convert.ToInt32(rd["Rating_Count"]);
+                            bookModel.Discount_Price = Convert.ToInt32(rd["Discount_Price"]);
+                            bookModel.Book_Quantity = Convert.ToInt32(rd["Book_Quantity"]);
+                            bookModel.Book_Image = rd["Book_Image"].ToString();
                         }
                         return bookModel;
                     }

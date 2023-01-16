@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 
 namespace BookStore.Controllers
 {
@@ -70,7 +71,7 @@ namespace BookStore.Controllers
                 string token = iuserBL.ForgetPassword(email);
                 if (token != null)
                 {
-                    return Ok(new { success = true, Message = "Please check your Email.Token sent succesfully." });
+                    return Ok(new { success = true, Message = "Please check your Email.Token sent succesfully.", data= token });
                 }
                 else
                 {
@@ -88,7 +89,7 @@ namespace BookStore.Controllers
         {
             try
             {
-                var email = User.FindFirst("Email_Id").Value.ToString();
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
                 var data = iuserBL.ResetPassword(email, newpassword, confirmpassword);
                 if (data != null)
                 {

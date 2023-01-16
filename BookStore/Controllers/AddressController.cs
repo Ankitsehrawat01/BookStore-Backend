@@ -73,11 +73,11 @@ namespace BookStore.Controllers
         [Authorize]
         [HttpGet]
         [Route("Get")]
-        public IActionResult getAddress(long UserId)
+        public IActionResult getAddress()
         {
             try
             {
-                //long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
+                long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "UserId").Value);
 
                 var response = iAddressBL.getAddress(UserId);
                 if (response != null) 
